@@ -4,6 +4,8 @@ namespace naeng\SkinGround;
 
 use kim\present\sqlcore\SqlPluginTrait;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerChangeSkinEvent;
+use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\promise\PromiseResolver;
@@ -42,6 +44,14 @@ class SkinGround extends PluginBase implements Listener{
             $this->getConfig()->save();
             throw new Exception("업로드 링크가 설정되지 않았습니다");
         }
+        Await::f2c(function(){
+            foreach((yield from $this->conn->asyncSelect("all")) as $rows){
+                if(!isset($rows["xuid"]) || !isset($rows["url"])){
+                    continue;
+                }
+                $this->url[$rows["xuid"]] = $rows["url"];
+            }
+        });
     }
 
     public function onLoad() : void{
@@ -69,7 +79,6 @@ class SkinGround extends PluginBase implements Listener{
         $url = (yield from $this->conn->asyncSelect("get", ["xuid" => $xuid]))[0]["url"] ?? null;
         if($url !== null){
             $this->url[$xuid] = $url;
-            yield from $this->conn->asyncChange("set", ["xuid" => $xuid, "url" => $url]);
             return $url;
         }
         return yield from Await::promise(function($resolve) use($xuid, $player){
@@ -78,7 +87,18 @@ class SkinGround extends PluginBase implements Listener{
         });
     }
 
-    public function getCashed(int $xuid) : ?string{
+    public function getByXuid(int $xuid) : Generator{
+        if(isset($this->url[$xuid])){
+            return $this->url[$xuid];
+        }
+        $url = (yield from $this->conn->asyncSelect("get", ["xuid" => $xuid]))[0]["url"] ?? null;
+        if($url !== null){
+            $this->url[$xuid] = $url;
+        }
+        return null;
+    }
+
+    public function getCashedUrl(int $xuid) : ?string{
         return $this->url[$xuid] ?? null;
     }
 
@@ -216,13 +236,9 @@ class SkinGround extends PluginBase implements Listener{
         });
     }
 
-    /*
     public function handlePlayerJoinEvent(PlayerJoinEvent $event) : void{
         $player = $event->getPlayer();
-        Await::f2c(function() use($player){
-            var_dump(yield from $this->get($player));
-        });
+        Await::g2c($this->get($player));
     }
-    */
 
 }
