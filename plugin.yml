@@ -1,7 +1,7 @@
 name: SkinGround
 author: naeng
 main: naeng\SkinGround\SkinGround
-version: 1.0.0
+version: 1.1.0
 api: 5.0.0
 depend:
   - SqlCore

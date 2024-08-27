@@ -19,3 +19,7 @@ VALUES (:xuid, :url) ON DUPLICATE KEY UPDATE url = :url;
 SELECT url FROM skin_url
 WHERE xuid = :xuid;
 -- #}
+
+-- #{ all
+SELECT * FROM skin_url
+-- #}
