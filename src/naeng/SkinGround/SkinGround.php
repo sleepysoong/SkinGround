@@ -227,7 +227,7 @@ class SkinGround extends PluginBase implements Listener{
                     SkinGround::getInstance()->getLogger()->error(json_encode($result));
                     $result = null;
                 }elseif(isset($result["file_link"])){
-                    $result = $result["file_link"] . "?key=" . urlencode($this->key);
+                    $result = $result["file_link"];
                 }else{
                     $result = null;
                 }
