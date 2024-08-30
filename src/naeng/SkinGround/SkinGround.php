@@ -177,14 +177,14 @@ class SkinGround extends PluginBase implements Listener{
                 $skin = imagecreatefrompng(Path::join($this->path, "temp-{$this->xuid}.png"));
                 $face = imagecreatetruecolor(8, 8);
                 imagecopy($face, $skin, 0, 0, 8, 8, 8, 8);
-                $width = 1920;
-                $height = 1080;
+                $width = 854;
+                $height = 480;
                 $background = imagecreatetruecolor($width, $height);
                 $backgroundColor = $this->getPastelBackgroundColor($skin, 8, 8, 8, 8);
                 imagefill($background, 0, 0, imagecolorallocate($background, $backgroundColor[0], $backgroundColor[1], $backgroundColor[2]));
-                $faceResized = imagecreatetruecolor(500, 500);
-                imagecopyresized($faceResized, $face, 0, 0, 0, 0, 500, 500, 8, 8);
-                imagecopy($background, $faceResized, ($width - 500) / 2, ($height - 500) / 2, 0, 0, 500, 500);
+                $faceResized = imagecreatetruecolor(222, 222);
+                imagecopyresized($faceResized, $face, 0, 0, 0, 0, 222, 222, 8, 8);
+                imagecopy($background, $faceResized, ($width - 222) / 2, ($height - 222) / 2, 0, 0, 222, 222);
                 imagepng($background, Path::join($this->path, "wallpaper-{$this->xuid}.png"));
                 imagedestroy($background);
                 imagedestroy($skin);
@@ -227,7 +227,7 @@ class SkinGround extends PluginBase implements Listener{
                     SkinGround::getInstance()->getLogger()->error(json_encode($result));
                     $result = null;
                 }elseif(isset($result["file_link"])){
-                    $result = $result["file_link"] . "?key=" . urlencode($this->key);
+                    $result = $result["file_link"];
                 }else{
                     $result = null;
                 }
